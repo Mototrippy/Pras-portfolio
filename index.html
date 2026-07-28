@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Prasanna T — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#060709;
+    --panel: rgba(15, 25, 47, 0.55);
+    --panel-solid:#18213a;
+    --deep:#0e1c3d;
+    --blue:#1d4aa4;
+    --blue-soft: rgba(47,111,237,0.35);
+    --cyan:#57e3ff;
+    --text:#eaf1fb;
+    --muted:#8a9ab8;
+    --line: rgba(87,227,255,0.14);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--void);
+    color: var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  ::selection{ background: var(--blue); color:#fff; }
+  
+
+  /* ---------- Background field ---------- */
+  .bg-field{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse 900px 600px at 15% -5%, rgba(47,111,237,0.20), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 20%, rgba(87,227,255,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 700px at 50% 100%, rgba(47,111,237,0.12), transparent 60%),
+      var(--void);
+  }
+  .grid-overlay{
+    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.35;
+    background-image:
+      linear-gradient(rgba(87,227,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(87,227,255,0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black, transparent 75%);
+  }
+
+  #blur-layer{
+    position:fixed; inset:0; z-index:5; pointer-events:none;
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.5s linear;
+  }
+
+  section, header, footer{ position:relative; z-index:2; }
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 20px 6vw;
+    background: rgba(4,6,12,0.45);
+    backdrop-filter: blur(16px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.1rem;
+    letter-spacing:0.5px;
+  }
+  .logo span{ color: var(--cyan); }
+  .nav-links{ display:flex; gap:34px; list-style:none; }
+  .nav-links a{
+    color: var(--muted); text-decoration:none; font-size:0.88rem;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.3px;
+    transition: color 0.25s ease;
+    position:relative;
+  }
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:-6px; width:0; height:1px;
+    background: var(--cyan); transition: width 0.3s ease;
+  }
+  .nav-links a:hover{ color: var(--text); }
+  .nav-links a:hover::after{ width:100%; }
+  .nav-cta{
+    font-family:'JetBrains Mono', monospace; font-size:0.8rem;
+    color: var(--void); background: linear-gradient(135deg, var(--cyan), var(--blue));
+    padding:9px 18px; border-radius:100px; text-decoration:none; font-weight:600;
+  }
+  .burger{ display:none; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh; display:flex; align-items:center;
+    padding: 120px 6vw 60px;
+    gap: 40px;
+  }
+  .hero-inner{
+    display:grid; grid-template-columns: 1.1fr 0.9fr; gap:40px; align-items:center;
+    width:100%; max-width:1360px; margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; color:var(--cyan); font-size:0.82rem;
+    letter-spacing:2px; text-transform:uppercase; display:flex; align-items:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:''; width:26px; height:1px; background:var(--cyan);
+  }
+  .hero h1{
+    font-family:'Space Grotesk', sans-serif; font-weight:700;
+    font-size: clamp(2.6rem, 5.2vw, 4.4rem); line-height:1.05; letter-spacing:-1px;
+  }
+  .hero h1 .grad{
+    background: linear-gradient(120deg, var(--cyan), var(--blue) 65%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p.lede{
+    margin-top:22px; color:var(--muted); font-size:1.05rem; max-width:520px; line-height:1.7;
+  }
+  .hero-actions{ display:flex; gap:16px; margin-top:36px; flex-wrap:wrap; }
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-size:0.85rem; text-decoration:none;
+    padding:14px 26px; border-radius:100px; display:inline-flex; align-items:center; gap:10px;
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .btn-primary{
+    background: linear-gradient(135deg, var(--cyan), var(--blue));
+    color:#04060c; font-weight:600; box-shadow: 0 8px 30px -8px rgba(47,111,237,0.7);
+  }
+  .btn-primary:hover{ transform: translateY(-3px); box-shadow: 0 14px 36px -8px rgba(87,227,255,0.55); }
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--text); background: rgba(255,255,255,0.02);
+  }
+  .btn-ghost:hover{ border-color: var(--cyan); transform: translateY(-3px); }
+
+  .stat-row{ display:flex; gap:34px; margin-top:52px; flex-wrap:wrap; }
+  .stat{ font-family:'Space Grotesk', sans-serif; }
+  .stat b{ font-size:1.7rem; display:block; color:var(--text); }
+  .stat span{ font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--muted); letter-spacing:0.5px; }
+
+  /* ---------- 3D photo card ---------- */
+  .card-stage{ perspective: 1400px; display:flex; justify-content:center; }
+  .id-card{
+    position:relative; width:340px; height:430px;
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+    will-change: transform;
+  }
+  .id-card-face{
+    position:absolute; inset:0; border-radius: 26px;
+    background: linear-gradient(160deg, rgba(20,30,54,0.85), rgba(6,9,18,0.9));
+    border:1px solid var(--line);
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(87,227,255,0.05) inset;
+    overflow:hidden;
+    transform-style: preserve-3d;
+  }
+  .id-card-glow{
+    position:absolute; inset:-2px; border-radius:28px; z-index:-1;
+    background: conic-gradient(from 0deg, var(--cyan), var(--blue), transparent 40%, var(--cyan));
+    filter: blur(18px); opacity:0.55; animation: spin 8s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  .id-card-photo{
+    position:absolute; bottom:0; left:50%; transform: translateX(-50%) translateZ(40px);
+    height:92%; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+  }
+  .id-card-ring{
+    position:absolute; top:22px; left:22px; right:22px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'JetBrains Mono', monospace; font-size:0.65rem; color:var(--cyan);
+    letter-spacing:1px; transform: translateZ(60px);
+  }
+  .id-card-ring .dot{ width:7px; height:7px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan); }
+  .id-card-bottom{
+    position:absolute; left:22px; right:22px; bottom:18px; transform: translateZ(60px);
+    background: rgba(4,6,12,0.55); backdrop-filter: blur(10px);
+    border:1px solid var(--line); border-radius:14px; padding:12px 16px;
+  }
+  .id-card-bottom b{ font-family:'Space Grotesk', sans-serif; font-size:0.95rem; display:block; }
+  .id-card-bottom span{ font-family:'JetBrains Mono', monospace; font-size:0.68rem; color:var(--muted); }
+
+  .orbit-chip{
+    position:absolute; width:46px; height:46px; border-radius:50%;
+    background: rgba(11,15,26,0.85); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 8px 20px -6px rgba(0,0,0,0.6);
+    animation: float 6s ease-in-out infinite;
+  }
+  .orbit-chip img{ width:24px; height:24px; }
+  @keyframes float{ 0%,100%{ transform: translateY(0px);} 50%{ transform: translateY(-12px);} }
+
+  /* ---------- Section shell ---------- */
+  .section{ padding: 130px 6vw; max-width:1360px; margin:0 auto; }
+  .section-head{ margin-bottom:60px; max-width:640px; }
+  .kicker{
+    font-family:'JetBrains Mono', monospace; color:var(--cyan); font-size:0.78rem;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; display:block;
+  }
+  .section-head h2{
+    font-family:'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 3.4vw, 2.6rem); font-weight:600;
+    letter-spacing:-0.5px; line-height:1.2;
+  }
+  .section-head p{ color:var(--muted); margin-top:16px; line-height:1.7; }
+
+  .reveal{ opacity:0; transform: translateY(46px); filter: blur(6px); transition: opacity 0.9s cubic-bezier(.16,.84,.44,1), transform 0.9s cubic-bezier(.16,.84,.44,1), filter 0.9s cubic-bezier(.16,.84,.44,1); }
+  .reveal.in{ opacity:1; transform: translateY(0); filter: blur(0px); }
+
+  /* ---------- About ---------- */
+  .about-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:50px; align-items:start; }
+  .about-grid p{ color:var(--muted); line-height:1.85; font-size:1rem; }
+  .edu-list{ list-style:none; display:flex; flex-direction:column; gap:16px; }
+  .edu-list li{
+    background: var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px 20px;
+    display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+  }
+  .edu-list b{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:0.95rem; }
+  .edu-list .school{ color:var(--muted); font-size:0.82rem; display:block; margin-top:3px; }
+  .edu-list .score{
+    font-family:'JetBrains Mono', monospace; color:var(--cyan); font-size:0.8rem;
+    border:1px solid var(--line); padding:5px 12px; border-radius:100px; white-space:nowrap;
+  }
+
+  /* ---------- Skills ---------- */
+  .skills-columns{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .skill-panel{
+    background: var(--panel); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 34px; backdrop-filter: blur(12px);
+  }
+  .skill-panel h3{
+    font-family:'Space Grotesk', sans-serif; font-size:1.15rem; margin-bottom:6px; display:flex; align-items:center; gap:10px;
+  }
+  .skill-panel h3 .tag{
+    font-family:'JetBrains Mono', monospace; font-size:0.65rem; color:var(--cyan);
+    border:1px solid var(--line); padding:3px 9px; border-radius:100px; text-transform:uppercase;
+  }
+  .skill-panel .desc{ color:var(--muted); font-size:0.88rem; margin-bottom:26px; line-height:1.6; }
+  .chip-grid{ display:flex; flex-wrap:wrap; gap:12px; }
+  .chip{
+    display:flex; align-items:center; gap:9px;
+    background: rgba(255,255,255,0.03); border:1px solid var(--line);
+    padding:9px 14px 9px 10px; border-radius:100px;
+    font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--text);
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  .chip img{ width:18px; height:18px; }
+  .chip:hover{ transform: translateY(-3px); border-color: var(--cyan); background: rgba(87,227,255,0.06); }
+
+  /* ---------- Projects ---------- */
+  .project-grid{ display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+  .proj-card{
+    perspective: 1000px;
+  }
+  .proj-inner{
+    background: linear-gradient(165deg, rgba(20,30,54,0.6), rgba(6,9,18,0.75));
+    border:1px solid var(--line); border-radius: var(--radius);
+    padding:30px; height:100%;
+    transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s ease, border-color 0.4s ease;
+    transform-style: preserve-3d;
+  }
+  .proj-card:hover .proj-inner{
+    transform: translateY(-8px) rotateX(3deg);
+    box-shadow: 0 30px 60px -20px rgba(47,111,237,0.35);
+    border-color: var(--blue-soft);
+  }
+  .proj-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; }
+  .proj-index{ font-family:'JetBrains Mono', monospace; color:var(--cyan); font-size:0.78rem; }
+  .proj-inner h3{ font-family:'Space Grotesk', sans-serif; font-size:1.28rem; margin-bottom:12px; }
+  .proj-inner ul{ list-style:none; display:flex; flex-direction:column; gap:9px; margin-bottom:22px; }
+  .proj-inner ul li{ color:var(--muted); font-size:0.88rem; line-height:1.6; padding-left:18px; position:relative; }
+  .proj-inner ul li::before{ content:''; position:absolute; left:0; top:8px; width:6px; height:6px; border-radius:50%; background: var(--blue); box-shadow:0 0 8px var(--blue); }
+  .proj-stack{ display:flex; flex-wrap:wrap; gap:8px; }
+  .proj-stack span{
+    display:flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono', monospace; font-size:0.7rem; color:var(--muted);
+    border:1px solid var(--line); padding:5px 10px; border-radius:100px;
+  }
+  .proj-stack img{ width:14px; height:14px; }
+
+  /* ---------- Contact ---------- */
+  .contact-panel{
+    background: radial-gradient(circle at 20% 20%, rgba(47,111,237,0.18), transparent 55%), var(--panel-solid);
+    border:1px solid var(--line); border-radius: 28px;
+    padding: 70px 60px; text-align:center; position:relative; overflow:hidden;
+  }
+  .contact-panel h2{
+    font-family:'Space Grotesk', sans-serif; font-size: clamp(1.9rem,3.6vw,3rem); font-weight:600; letter-spacing:-1px;
+    max-width:700px; margin:0 auto 18px;
+  }
+  .contact-panel p{ color:var(--muted); max-width:520px; margin:0 auto 40px; line-height:1.7; }
+  .contact-links{ display:flex; justify-content:center; gap:16px; flex-wrap:wrap; }
+  .contact-link{
+    display:flex; align-items:center; gap:10px;
+    background: rgba(255,255,255,0.03); border:1px solid var(--line);
+    padding:14px 22px; border-radius:100px; text-decoration:none; color:var(--text);
+    font-family:'JetBrains Mono', monospace; font-size:0.85rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  .contact-link:hover{ transform: translateY(-3px); border-color: var(--cyan); background: rgba(87,227,255,0.07); }
+  .contact-link svg{ width:18px; height:18px; stroke: var(--cyan); }
+
+  .resume-row{ display:flex; justify-content:center; gap:14px; margin-top:26px; flex-wrap:wrap; }
+  .resume-row a{
+    font-family:'JetBrains Mono', monospace; font-size:0.76rem; color:var(--muted);
+    border-bottom:1px dashed var(--line); text-decoration:none; padding-bottom:2px;
+  }
+  .resume-row a:hover{ color:var(--cyan); border-color:var(--cyan); }
+
+  footer{ text-align:center; padding:40px 6vw 50px; color:var(--muted); font-family:'JetBrains Mono', monospace; font-size:0.76rem; }
+  footer span{ color: var(--cyan); }
+
+  @media (max-width: 980px){
+    .hero-inner{ grid-template-columns:1fr; }
+    .card-stage{ order:-1; margin-bottom:20px; }
+    .about-grid{ grid-template-columns:1fr; }
+    .skills-columns{ grid-template-columns:1fr; }
+    .project-grid{ grid-template-columns:1fr; }
+    .nav-links{ display:none; }
+    .contact-panel{ padding:50px 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+    .reveal{ opacity:1; transform:none; filter:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-field"></div>
+<div class="grid-overlay"></div>
+<div id="blur-layer"></div>
+
+<nav>
+  <div class="logo">Prasanna<span>.T</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="#contact">Let's Connect</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow">B.Tech Information Technology · 2026</div>
+      <h1>Turning raw data<br> into <span class="grad">decisions</span>,<br>and ideas into <span class="grad">software</span>.</h1>
+      <p class="lede">I'm Prasanna T — an IT graduate who moves fluidly between analyst and developer work: building dashboards that explain what happened, and applications that make things happen.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">View Projects →</a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><b>8.17</b><span>CGPA · B.TECH IT</span></div>
+        <div class="stat"><b>4+</b><span>PROJECTS SHIPPED</span></div>
+        <div class="stat"><b>2</b><span>DISCIPLINES · DATA + DEV</span></div>
+      </div>
+    </div>
+
+    <div class="card-stage">
+      <div class="id-card" id="idCard">
+        <div class="id-card-glow"></div>
+        <div class="id-card-face">
+          <div class="id-card-ring">
+            <span>Pras // ID
+              -2026</span>
+            <span class="dot"></span>
+          </div>
+          <img class="id-card-photo" src="assests/pras.jpeg">
+            <b>--Prasanna T</b>
+            <span>Data &amp; Software ·</span>
+          </div>
+        </div>
+        <div class="orbit-chip" style="top:-16px; right:20px; animation-delay:0s;">
+          <img src="https://cdn.simpleicons.org/python/57e3ff" alt="Python" />
+        </div>
+        <div class="orbit-chip" style="top:40%; right:-26px; animation-delay:1.2s;">
+          <img src="https://cdn.simpleicons.org/react/57e3ff" alt="React" />
+        </div>
+         <div class="orbit-chip" style="top:40%; left:-26px; animation-delay:1.2s;">
+          <img src="assests/tabelau.png" alt="tableau" />
+        </div>
+         <div class="orbit-chip" style="top:80%; right:-6px; animation-delay:1.2s;">
+          <img src="https://cdn.simpleicons.org/html5/svg/57e3ff" alt="HTML" />
+        </div>
+        <div class="orbit-chip" style="bottom: 50px;%; left: 6px; animation-delay:2s;">
+          <img src="assests/power BI.jpeg" alt="Power BI" />
+        </div>
+        <div class="orbit-chip" style="top:-16px; left:16px; animation-delay:2.8s;">
+          <img src="https://cdn.simpleicons.org/mysql/57e3ff" alt="MySQL" />
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="about">
+  <div class="section-head reveal">
+    <span class="kicker">// About</span>
+    <h2>A dual lens on technology — analytical and constructive.</h2>
+  </div>
+  <div class="about-grid">
+    <p class="reveal">Motivated and detail-oriented B.Tech Information Technology graduate with a strong foundation across data analysis, database management, and software development. Comfortable in Python, SQL, and JavaScript — from cleaning and visualizing messy datasets to shipping Django and React Native applications. I care about turning ambiguity into clear, actionable outcomes, whether that's a dashboard a business team trusts or a feature users don't have to think about.</p>
+    <ul class="edu-list reveal">
+      <li>
+        <div><b>B.Tech · Information Technology</b><span class="school">Bharathidasan Engineering College,Anna University Tirupattur</span></div>
+        <span class="score">CGPA 8.17 · 2026</span>
+      </li>
+      <li>
+        <div><b>HSC</b><span class="school">YMCA Brown Memorial Matric Hr. Sec. School</span></div>
+        <span class="score">75% · 2022</span>
+      </li>
+      <li>
+        <div><b>SSLC</b><span class="school">YMCA Brown Memorial Matric Hr. Sec. School</span></div>
+        <span class="score">92% · 2020</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="skills">
+  <div class="section-head reveal">
+    <span class="kicker">// Skill Set</span>
+    <h2>Two toolkits, one problem-solving mindset.</h2>
+    <p>Certified in Deloitte's Data Analytics job simulation and IBM's SQL &amp; Relational Databases 101.</p>
+  </div>
+  <div class="skills-columns">
+    <div class="skill-panel reveal">
+      <h3>Data &amp; Analytics <span class="tag">Analyst</span></h3>
+      <p class="desc">Cleaning, transforming and visualizing data into dashboards that drive decisions.</p>
+      <div class="chip-grid">
+        <div class="chip"><img src="https://cdn.simpleicons.org/python/57e3ff" alt="">Python</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/mysql/57e3ff" alt="">SQL</div>
+        <div class="chip"><img src="assests/excel.jpeg" alt="">Excel</div>
+        <div class="chip"><img src="assests/power BI.jpeg" alt="">Power BI</div>
+        <div class="chip"><img src="assests/tabelau.png" alt="">Tableau</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/numpy/57e3ff" alt="">NumPy</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/pandas/57e3ff" alt="">Pandas</div>
+      </div>
+    </div>
+    <div class="skill-panel reveal">
+      <h3>Software Development <span class="tag">Developer</span></h3>
+      <p class="desc">Building and shipping scalable, maintainable applications end to end.</p>
+      <div class="chip-grid">
+        <div class="chip"><img src="https://cdn.simpleicons.org/python/57e3ff" alt="">Python</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/django/57e3ff" alt="">Django</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/react/57e3ff" alt="">React Native</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/opencv/57e3ff" alt="">OpenCV</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/supabase/57e3ff" alt="">Supabase</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/sqlite/57e3ff" alt="">SQLite</div>
+        <div class="chip"><img src="https://cdn.simpleicons.org/git/57e3ff" alt="">Git</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="section-head reveal">
+    <span class="kicker">// Projects</span>
+    <h2>Selected work across analytics and application development.</h2>
+  </div>
+  <div class="project-grid">
+
+    <div class="proj-card reveal">
+      <div class="proj-inner">
+        <div class="proj-top"><span class="proj-index">01 · Analytics</span></div>
+        <h3>Sales Performance Analysis Dashboard</h3>
+        <ul>
+          <li>Analysed sales data to identify top-performing products and revenue trends</li>
+          <li>Built interactive dashboards to monitor regional and monthly performance</li>
+          <li>Generated insights that supported data-driven decisions</li>
+        </ul>
+        <div class="proj-stack">
+          <span><img src="https://cdn.simpleicons.org/mysql/8a9ab8" alt="">SQL</span>
+          <span><img src="https://cdn.simpleicons.org/microsoftexcel/8a9ab8" alt="">Excel</span>
+          <span><img src="https://cdn.simpleicons.org/powerbi/8a9ab8" alt="">Power BI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div class="proj-inner">
+        <div class="proj-top"><span class="proj-index">02 · Analytics</span></div>
+        <h3>Bank Loan Analysis</h3>
+        <ul>
+          <li>Analysed loan application data to identify approval and default patterns</li>
+          <li>Evaluated customer financial profiles to assess lending risk</li>
+          <li>Created visual reports to support loan decision-making</li>
+        </ul>
+        <div class="proj-stack">
+          <span><img src="https://cdn.simpleicons.org/python/8a9ab8" alt="">Python</span>
+          <span><img src="https://cdn.simpleicons.org/mysql/8a9ab8" alt="">MySQL</span>
+          <span><img src="assests/tabelau.png" alt="">Tableau</span>
+          <span><img src="https://cdn.simpleicons.org/git/8a9ab8" alt="">Git</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div class="proj-inner">
+        <div class="proj-top"><span class="proj-index">03 · Software</span></div>
+        <h3>Face Recognition Based Voting System</h3>
+        <ul>
+          <li>Built a secure facial-recognition voter authentication system</li>
+          <li>Developed a scalable Django backend with MySQL data management</li>
+          <li>Integrated OpenCV for real-time face detection and recognition</li>
+        </ul>
+        <div class="proj-stack">
+          <span><img src="https://cdn.simpleicons.org/python/8a9ab8" alt="">Python</span>
+          <span><img src="https://cdn.simpleicons.org/django/8a9ab8" alt="">Django</span>
+          <span><img src="https://cdn.simpleicons.org/opencv/8a9ab8" alt="">OpenCV</span>
+          <span><img src="https://cdn.simpleicons.org/mysql/8a9ab8" alt="">MySQL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card reveal">
+      <div class="proj-inner">
+        <div class="proj-top"><span class="proj-index">04 · Software</span></div>
+        <h3>SmartTask — Productivity &amp; Task Management App</h3>
+        <ul>
+          <li>Cross-platform app built with React Native (Expo), modular architecture</li>
+          <li>Supabase backend with SQLite offline storage and real-time sync</li>
+          <li>Clerk authentication for secure, reliable access</li>
+        </ul>
+        <div class="proj-stack">
+          <span><img src="https://cdn.simpleicons.org/react/8a9ab8" alt="">React Native</span>
+          <span><img src="https://cdn.simpleicons.org/supabase/8a9ab8" alt="">Supabase</span>
+          <span><img src="https://cdn.simpleicons.org/sqlite/8a9ab8" alt="">SQLite</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="contact-panel reveal">
+    <span class="kicker">// Contact</span>
+    <h2>Let's build something worth measuring — and something worth using.</h2>
+    <p>Open to Data Analyst and Software Development roles. Reach out directly, or check the work on GitHub.</p>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:prasanna261103@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M4 4h16v16H4z" stroke-linejoin="round"/><path d="M4 6l8 7 8-7" stroke-linejoin="round"/></svg>
+        prasanna261103@gmail.com
+      </a>
+      <a class="contact-link" href="tel:+916369849984">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M6 3h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a2 2 0 01-2 2C10.5 21 3 13.5 3 5a2 2 0 012-2z" stroke-linejoin="round"/></svg>
+        +91 63698 49984
+      </a>
+      <a class="contact-link" href="https://github.com/Mototrippy" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><path d="M12 2a10 10 0 00-3.16 19.5c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.93 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 015 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.83-2.34 4.68-4.57 4.92.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0012 2z" stroke-linejoin="round"/></svg>
+        github.com/Mototrippy
+      </a>
+       <a class="contact-link" href="https://www.linkedin.com/in/prasanna-thanikachalam?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><img src="assests/linkedin.png" width="20" height="20" alt="LinkedIn" stroke-linejoin="round"/></svg>
+        linkedin/in/Prasanna T
+      </a>
+    </div>
+    <div class="resume-row">
+      <a href="Prasanna_Data_Analyst.pdf" target="_blank">Download Data Analyst Resume ↓</a>
+      <a href="Prasanna_Developer.pdf" target="_blank">Download Developer Resume ↓</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Designed &amp; built for <span>Prasanna T</span> · © 2026
+</footer>
+
+<script>
+  // 3D tilt on the hero ID card
+  const card = document.getElementById('idCard');
+  const stage = document.querySelector('.card-stage');
+  stage.addEventListener('mousemove', (e) => {
+    const rect = stage.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `rotateY(${x * 22}deg) rotateX(${-y * 22}deg)`;
+  });
+  stage.addEventListener('mouseleave', () => {
+    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+  });
+  // gentle idle motion on touch devices
+  if (window.matchMedia('(hover: none)').matches){
+    let t = 0;
+    setInterval(()=>{ t += 0.02; card.style.transform = `rotateY(${Math.sin(t)*8}deg) rotateX(${Math.cos(t*0.7)*5}deg)`; }, 50);
+  }
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  revealEls.forEach(el=>io.observe(el));
+
+  // Minimal motion blur on scroll (velocity based, capped low, resets fast)
+  const blurLayer = document.getElementById('blur-layer');
+  let lastY = window.scrollY, lastT = performance.now(), rafId = null, blurVal = 0;
+  function onScroll(){
+    const now = performance.now();
+    const dy = window.scrollY - lastY;
+    const dt = Math.max(now - lastT, 1);
+    const velocity = Math.abs(dy / dt); // px per ms
+    blurVal = Math.min(velocity * 6, 2.2); // minimal cap
+    blurLayer.style.backdropFilter = `blur(${blurVal}px)`;
+    lastY = window.scrollY; lastT = now;
+    clearTimeout(onScroll._t);
+    onScroll._t = setTimeout(()=>{ blurLayer.style.backdropFilter = 'blur(0px)'; }, 120);
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+</script>
+
+</body>
+</html>
